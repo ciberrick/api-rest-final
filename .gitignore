@@ -1,0 +1,14 @@
+# No subir dependencias de Node
+node_modules/
+
+# Archivos de logs de Node/NPM
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Archivos de sistema (por si acaso)
+.DS_Store
+Thumbs.db
+
+# Más adelante, si usas variables de entorno:
+.env
