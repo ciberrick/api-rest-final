@@ -1,12 +1,16 @@
 const { Pool } = require('pg');
 
-// 🔧 CONFIGURA AQUÍ TU CONEXIÓN A POSTGRES
+// CONFIGURA CONEXIÓN A POSTGRES
+require('dotenv').config();
+const { Pool } = require('pg');
+
 const pool = new Pool({
-  user: 'postgres',        // tu usuario de PostgreSQL
-  host: 'localhost',       // host
-  database: 'postgres',    // BD donde creaste tablas
-  password: '12345',       // tu contraseña
-  port: 5432,              // puerto por defecto
+  user: process.env.DB_USER,
+  host: process.env.DB_HOST,
+  database: process.env.DB_NAME,
+  password: process.env.DB_PASSWORD,
+  port: process.env.DB_PORT,
+  ssl: { rejectUnauthorized: false }   // Render requiere SSL
 });
 
 //
