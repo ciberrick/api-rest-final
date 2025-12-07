@@ -2,19 +2,24 @@
 require('dotenv').config();
 const { Pool } = require('pg');
 
+// Pool de conexión (Render requiere SSL)
 const pool = new Pool({
-  user: process.env.DB_USER,
-  host: process.env.DB_HOST,
+  user:     process.env.DB_USER,
+  host:     process.env.DB_HOST,
   database: process.env.DB_NAME,
   password: process.env.DB_PASSWORD,
-  port: process.env.DB_PORT,
-  ssl: { rejectUnauthorized: false }, // Render requiere SSL
+  port:     process.env.DB_PORT,
+  ssl: { rejectUnauthorized: false }, // 🔐 obligatorio en Render
 });
-//
+
+// Logs útiles por si algo falla en Render
+pool.on('error', (err) => {
+  console.error('❌ Error inesperado en el pool de PostgreSQL:', err);
+});
+
 // ---------- PRODUCTOS ----------
 //  Tabla: productos
 //  Campos: id_producto, nombre, descripcion, precio, stock, id_categoria
-//
 
 // GET /productos
 const getProductos = async (req, res) => {
@@ -111,29 +116,25 @@ const deleteProducto = async (req, res) => {
   }
 };
 
-
-//
 // ---------- CLIENTES ----------
 //  Tabla: clientes
 //  Campos: id, nombre, apellido_paterno, apellido_materno, rfc
-//
 
 // GET /clientes
 const getClientes = async (req, res) => {
   try {
     const result = await pool.query(
-      'SELECT id, nombre, apellido_paterno, apellido_materno, rfc FROM clientes'
+      'SELECT id, nombre, apellido_paterno, apellido_materno, rfc FROM clientes ORDER BY id'
     );
     res.status(200).json(result.rows);
   } catch (err) {
     console.error('Error en getClientes:', err);
     res.status(500).json({
       error: 'Error al obtener clientes',
-      detalle: err.message,       // 👈 agregamos esto
+      detalle: err.message,
     });
   }
 };
-
 
 // GET /clientes/:id
 const getClienteById = async (req, res) => {
@@ -229,12 +230,9 @@ const deleteCliente = async (req, res) => {
   }
 };
 
-
-//
 // ---------- ORDENES ----------
 //  Tabla: ordenes
 //  Campos: id, cliente_id, producto_id, cantidad, fecha
-//
 
 // GET /ordenes
 const getOrdenes = async (req, res) => {
@@ -361,9 +359,7 @@ const deleteOrden = async (req, res) => {
   }
 };
 
-//
 // EXPORTAR TODO
-//
 module.exports = {
   // productos
   getProductos,
