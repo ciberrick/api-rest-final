@@ -8,9 +8,8 @@ const pool = new Pool({
   database: process.env.DB_NAME,
   password: process.env.DB_PASSWORD,
   port: process.env.DB_PORT,
-  ssl: { rejectUnauthorized: false }   // Render requiere SSL
+  ssl: { rejectUnauthorized: false }, // Render requiere SSL
 });
-
 //
 // ---------- PRODUCTOS ----------
 //  Tabla: productos
@@ -123,20 +122,18 @@ const deleteProducto = async (req, res) => {
 const getClientes = async (req, res) => {
   try {
     const result = await pool.query(
-      `SELECT id,
-              nombre,
-              apellido_paterno,
-              apellido_materno,
-              rfc
-       FROM clientes
-       ORDER BY id`
+      'SELECT id, nombre, apellido_paterno, apellido_materno, rfc FROM clientes'
     );
     res.status(200).json(result.rows);
   } catch (err) {
     console.error('Error en getClientes:', err);
-    res.status(500).json({ error: 'Error al obtener clientes' });
+    res.status(500).json({
+      error: 'Error al obtener clientes',
+      detalle: err.message,       // 👈 agregamos esto
+    });
   }
 };
+
 
 // GET /clientes/:id
 const getClienteById = async (req, res) => {
