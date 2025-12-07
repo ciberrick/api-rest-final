@@ -2,20 +2,22 @@
 require('dotenv').config();
 const { Pool } = require('pg');
 
-// Pool de conexión (Render requiere SSL)
+const useSSL = String(process.env.DB_SSL || '').toLowerCase() === 'true';
+
 const pool = new Pool({
   user:     process.env.DB_USER,
   host:     process.env.DB_HOST,
   database: process.env.DB_NAME,
   password: process.env.DB_PASSWORD,
-  port:     process.env.DB_PORT,
-  ssl: { rejectUnauthorized: false }, // 🔐 obligatorio en Render
+  port:     Number(process.env.DB_PORT || 5432),
+  ssl: useSSL ? { rejectUnauthorized: false } : false,
 });
 
-// Logs útiles por si algo falla en Render
+// Logs útiles
 pool.on('error', (err) => {
   console.error('❌ Error inesperado en el pool de PostgreSQL:', err);
 });
+
 
 // ---------- PRODUCTOS ----------
 //  Tabla: productos
