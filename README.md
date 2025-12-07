@@ -1,244 +1,144 @@
-\# API REST Final – Unidad 7: Nuevas Tecnologías
+API REST Final – Node.js, Express, PostgreSQL y Render
 
+Este proyecto implementa una API REST completa con operaciones CRUD para las entidades Productos, Clientes y Órdenes.
+El desarrollo se realizó inicialmente en entorno local utilizando localhost para pruebas, pero la versión final fue desplegada como Web Service en Render para que el profesor pueda ingresar y probar la API públicamente.
 
+URL pública de la API (versión final para evaluación)
 
-Este proyecto corresponde a la Actividad Complementaria 1 y 2 de la Unidad 7 de Nuevas Tecnologías.
+https://api-rest-final-1.onrender.com
 
-El objetivo es desarrollar una API REST conectada a una base de datos PostgreSQL, documentarla con Postman
+Esta es la URL que debe utilizarse para todas las pruebas.
+El host local únicamente se utilizó durante la etapa de desarrollo.
 
-y desplegarla en un proveedor de la nube (Render.com). Además, se incluyen evidencias del funcionamiento
+Proceso de desarrollo
+1. Desarrollo en entorno local
 
-para la entrega académica.
+Durante la primera fase, la API se ejecutó en:
 
+http://localhost:10000
 
+En esta etapa se configuró lo siguiente:
 
----
+Conexión local a PostgreSQL
 
+Pruebas con Postman
 
+Implementación y depuración de todos los CRUD
 
-\## Tecnologías utilizadas
+Configuración inicial de variables de entorno
 
+Una vez confirmada la funcionalidad completa, el proyecto fue preparado para despliegue.
 
+2. Despliegue como Web Service en Render (versión final)
 
-\- Node.js  
+Para que el profesor pueda acceder a la API sin ejecutar nada localmente, se realizó el despliegue en Render.
+Este proceso incluyó:
 
-\- Express.js  
+Creación del servicio Web en Render
 
-\- PostgreSQL 17  
+Creación de la base de datos PostgreSQL en Render
 
-\- pg (node-postgres)  
+Configuración de variables de entorno en el panel de Render
 
-\- Postman  
+Configuración obligatoria de SSL para la conexión
 
-\- Render.com (despliegue)  
+Limpieza de caché y redeploy para aplicar cambios
 
-\- Git y GitHub (control de versiones)
+Exportación de colección y environment de Postman para pruebas online
 
+Esta es la versión oficial del proyecto para revisión.
 
-
----
-
-
-
-\## Estructura del proyecto
-
-
+Estructura del proyecto
 
 api-rest-final/
+│── db/ (scripts SQL y datos de ejemplo)
+│── node_modules/
+│── postman/ (colección y environment exportados)
+│── .env (variables locales)
+│── index.js (servidor Express)
+│── queries.js (consultas SQL y conexión a PostgreSQL)
+│── package.json
+│── package-lock.json
+│── README.md
 
-&nbsp;├─ db/
+Pruebas con Postman
 
-&nbsp;│   ├─ database.backup        (Respaldo de la base de datos)
+En la carpeta "postman/" se incluyen los siguientes archivos:
 
-&nbsp;│   └─ plantilla.sql          (Script SQL proporcionado por el profesor)
+api-rest-final-collection-render.json
+Colección completa con todas las rutas CRUD listas para pruebas.
 
-&nbsp;├─ postman/
+api-rest-final-env-render.json
+Environment que contiene la variable:
 
-&nbsp;│   ├─ My Collection.postman\_collection.json
+base_url = https://api-rest-final-1.onrender.com
 
-&nbsp;│   └─ api-rest-final-env.postman\_environment.json
+Con esta variable, todas las rutas pueden probarse así:
 
-&nbsp;├─ .gitignore
+{{base_url}}/clientes
+{{base_url}}/productos
+{{base_url}}/ordenes
 
-&nbsp;├─ index.js                   (Servidor Express principal)
+Endpoints principales
+Clientes
 
-&nbsp;├─ queries.js                 (Consultas SQL utilizadas por la API)
+GET /clientes
+GET /clientes/:id
+POST /clientes
+PUT /clientes/:id
+DELETE /clientes/:id
 
-&nbsp;├─ package.json
+Productos
 
-&nbsp;├─ package-lock.json
+GET /productos
+GET /productos/:id
+POST /productos
+PUT /productos/:id
+DELETE /productos/:id
 
-&nbsp;└─ README.md
+Nota: Si un producto está asociado a órdenes registradas, no puede eliminarse debido a las restricciones de claves foráneas de PostgreSQL.
 
+Órdenes
 
+GET /ordenes
+GET /ordenes/:id
+POST /ordenes
+PUT /ordenes/:id
+DELETE /ordenes/:id
 
----
+Modelo de base de datos (PostgreSQL)
 
+Tabla: clientes
+id SERIAL PRIMARY KEY
+nombre TEXT
+apellido_paterno TEXT
+apellido_materno TEXT
+rfc TEXT
 
+Tabla: productos
+id_producto SERIAL PRIMARY KEY
+nombre TEXT
+descripcion TEXT
+precio NUMERIC
+stock INT
+id_categoria INT
 
-\## Endpoints desarrollados
+Tabla: ordenes
+id SERIAL PRIMARY KEY
+cliente_id INT REFERENCES clientes(id)
+producto_id INT REFERENCES productos(id_producto)
+cantidad INT
+fecha TIMESTAMP
 
+Notas importantes
 
+La API en Render puede tardar entre 20 y 40 segundos en responder cuando se encuentra inactiva (cold start).
 
-GET /categorias  
+Las pruebas deben realizarse utilizando la variable {{base_url}} del environment de Render.
 
-Devuelve la lista de categorías.
+El repositorio incluye tanto la versión local como la versión desplegada.
 
+Autor
 
-
-POST /categorias  
-
-Agrega una nueva categoría.
-
-
-
-GET /productos  
-
-Retorna todos los productos.
-
-
-
-POST /productos  
-
-Registra un nuevo producto.
-
-
-
-(Se agregarán aquí los endpoints adicionales de la Actividad Complementaria 2.)
-
-
-
----
-
-
-
-\## Instalación y ejecución local
-
-
-
-Clonar el repositorio:
-
-
-
-git clone https://github.com/ciberrick/api-rest-final.git
-
-cd api-rest-final
-
-
-
-Instalar las dependencias:
-
-
-
-npm install
-
-
-
-Ejecutar el servidor:
-
-
-
-node index.js
-
-
-
-El servidor corre por defecto en:
-
-http://localhost:3000
-
-
-
----
-
-
-
-\## Colección de Postman
-
-
-
-La carpeta "postman" incluye:
-
-\- La colección completa de endpoints.
-
-\- El archivo de entorno utilizado para pruebas.
-
-
-
-Ambos archivos pueden importarse directamente en Postman.
-
-
-
----
-
-
-
-\## Base de datos
-
-
-
-El proyecto incluye dos archivos importantes:
-
-
-
-1\. plantilla.sql  
-
-&nbsp;  Archivo SQL original proporcionado por el profesor.
-
-
-
-2\. database.backup  
-
-&nbsp;  Respaldo completo de la base de datos utilizado en PostgreSQL 17.
-
-
-
-Estos archivos permiten recrear la base de datos del proyecto.
-
-
-
----
-
-
-
-\## Despliegue en Render.com
-
-
-
-El proyecto se desplegará como un Web Service en Render.com.
-
-
-
-URL de la API desplegada: pendiente de publicar.
-
-
-
-Una vez generado el enlace, será agregado en este apartado.
-
-
-
----
-
-
-
-\## Autor
-
-
-
-Ricardo Alcaraz (Usuario: ciberrick)  
-
-GitHub: https://github.com/ciberrick
-
-
-
----
-
-
-
-\## Licencia
-
-
-
-Proyecto con fines exclusivamente académicos para la materia de Nuevas Tecnologías – Unidad 7.
-
-
-
+Richard Sánchez Alcaraz
+Proyecto final – Bases de Datos
