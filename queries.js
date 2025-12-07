@@ -1,5 +1,3 @@
-const { Pool } = require('pg');
-
 // CONFIGURA CONEXIÓN A POSTGRES
 require('dotenv').config();
 const { Pool } = require('pg');
